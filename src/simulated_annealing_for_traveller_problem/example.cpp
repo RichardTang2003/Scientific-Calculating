@@ -14,7 +14,7 @@ unsigned z(std::vector<unsigned> route, std::vector<std::vector<unsigned>> mat);
 std::vector<std::vector<unsigned>> mat;
 int main()
 {
-	read("data/matrix.txt", mat);
+	mat = load_vector<unsigned>("data/matrix.txt");
 	std::ofstream output("data/saft_output.txt");
 	if (!output) {
 		std::cerr << "can't create file..." << std::endl;
@@ -58,12 +58,7 @@ int main()
 			z_p = z_now;
 			route = temp_route;
 			cnt = 0;
-			output << beg << ' ' << end << " | ";
-			for (unsigned num : temp_route) {
-				output << num << ' ';
-			}
-			output << "__distance:" << z_now << ' ';
-			output << " random accepted!" << '\n';
+			output << "random accepted..." << '\n';
 		}
 		else {
 			cnt++;
