@@ -7,8 +7,10 @@
 #include <cmath>
 #include <fstream>
 
-unsigned random(const unsigned a, const unsigned b);
-double random();
+using matools::load_vector;
+
+inline unsigned random(const unsigned a, const unsigned b);
+inline double random();
 unsigned z(std::vector<unsigned> route, std::vector<std::vector<unsigned>> mat);
 
 std::vector<std::vector<unsigned>> mat;
@@ -70,7 +72,7 @@ int main()
 	output.close();
 }
 
-double random()
+inline double random()
 {
 
 	// 创建一个随机设备
@@ -88,7 +90,7 @@ double random()
 	return random_number;
 
 }
-unsigned random(const unsigned a, const unsigned b)
+inline unsigned random(const unsigned a, const unsigned b)
 {
 	// 创建一个随机设备
 	std::random_device rd;
