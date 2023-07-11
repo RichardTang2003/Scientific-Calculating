@@ -20,7 +20,7 @@ namespace matools
 	public:
 		VectorDB() = default;
 		VectorDB(const std::string& filename);
-		VectorDB(const Eigen::MatrixXd&& m);
+		VectorDB(Eigen::MatrixXd&& m);
 
 		VectorDB& operator>>(std::ostream& os) { return save_to(os); };
 
@@ -39,7 +39,8 @@ namespace matools
 		}
 		VectorDB& set_label(const std::string& old_name, const std::string& new_name);
 		VectorDB& save_to(std::ostream& os);
-		VectorDB& load_from(std::istream& is);
+		VectorDB& save_to(const std::string& filename);
+		VectorDB& load_from(const std::string& filename);
 		VectorDB& push_back(const std::string& key, const Eigen::Matrix<double, 1, Eigen::Dynamic>& data);
 		VectorDB& erase(const std::string& key);
 		VectorDB& z_score_normalize()
@@ -57,6 +58,15 @@ namespace matools
 				static std::vector<bool> empty_vector;
 				return empty_vector;
 			}
+		}
+		VectorDB& clear()
+		{
+			Eigen::MatrixXd().swap(m_data);
+			Eigen::MatrixXd().swap(m_hash_rules);
+			std::unordered_map<std::string, typename Eigen::MatrixXd::Index>().swap(m_row_label_table);
+			std::vector<std::vector<bool>>().swap(m_hash_val);
+			std::vector<std::string>().swap(m_label);
+			m_dimension = 0;
 		}
 
 		//private:

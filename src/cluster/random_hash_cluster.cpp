@@ -19,21 +19,21 @@ namespace matools
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_label.size());
 #pragma omp parallel for
-		for (Eigen::MatrixXd::Index i = 0; i != m_label.size(); ++i) {
+		for (Eigen::MatrixXd::Index i = 0; i <= m_label.size(); ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}
 
 	}
 
-	VectorDB::VectorDB(const Eigen::MatrixXd&& m)
+	VectorDB::VectorDB(Eigen::MatrixXd&& m)
 	{
 		m_data = std::move(m);
 		m_dimension = m_data.cols();
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_data.rows());
 #pragma omp parallel for
-		for (Eigen::MatrixXd::Index i = 0; i != m_data.rows(); ++i) {
+		for (Eigen::MatrixXd::Index i = 0; i <= m_data.rows(); ++i) {
 			m_row_label_table.emplace(std::to_string(i), i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}
@@ -49,6 +49,32 @@ namespace matools
 			os << m_data.row(i) << '\n';
 		}
 
+		return *this;
+	}
+
+	VectorDB& VectorDB::save_to(const std::string& filename)
+	{
+		std::ofstream out(filename);
+		if (!out) {
+			std::cout << "Unable to open \"" << filename << "\" ...";
+			return *this;
+		}
+		return save_to(out);
+
+	}
+
+	VectorDB& VectorDB::load_from(const std::string& filename)
+	{
+		clear();
+		m_data = load_name_matrix(filename, m_label);
+		m_dimension = m_data.cols();
+		generate_hash_rules(m_dimension);
+		m_hash_val.resize(m_label.size());
+#pragma omp parallel for
+		for (Eigen::MatrixXd::Index i = 0; i <= m_label.size(); ++i) {
+			m_row_label_table.emplace(m_label[i], i);
+			m_hash_val[i] = hash(m_data.row(i));
+		}
 		return *this;
 	}
 
