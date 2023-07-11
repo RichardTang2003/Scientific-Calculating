@@ -19,7 +19,7 @@ namespace matools
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_label.size());
 #pragma omp parallel for
-		for (Eigen::MatrixXd::Index i = 0; i <= m_label.size(); ++i) {
+		for (Eigen::MatrixXd::Index i = 0; i <= m_label.size() - 1; ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}
@@ -33,7 +33,7 @@ namespace matools
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_data.rows());
 #pragma omp parallel for
-		for (Eigen::MatrixXd::Index i = 0; i <= m_data.rows(); ++i) {
+		for (Eigen::MatrixXd::Index i = 0; i <= m_data.rows() - 1; ++i) {
 			m_row_label_table.emplace(std::to_string(i), i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}

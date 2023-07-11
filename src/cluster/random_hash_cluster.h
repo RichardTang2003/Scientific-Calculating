@@ -67,6 +67,7 @@ namespace matools
 			std::vector<std::vector<bool>>().swap(m_hash_val);
 			std::vector<std::string>().swap(m_label);
 			m_dimension = 0;
+			return *this;
 		}
 
 		//private:
