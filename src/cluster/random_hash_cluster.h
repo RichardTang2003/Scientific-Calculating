@@ -33,8 +33,8 @@ namespace matools
 			else
 			{
 				std::cout << "Warning: No matching entry \"" << key << "\" found in database!\n";
-				auto p = std::make_shared<Eigen::Vector<double, 0>>();
-				return *p;
+				static Eigen::Vector<double, 0> empty_vector;
+				return empty_vector;
 			}
 		}
 		VectorDB& set_label(const std::string& old_name, const std::string& new_name);
@@ -54,8 +54,8 @@ namespace matools
 			else
 			{
 				std::cout << "Warning: No matching entry \"" << key << "\" found in database!\n";
-				auto p = std::make_shared<std::vector<bool>>();
-				return *p;
+				static std::vector<bool> empty_vector;
+				return empty_vector;
 			}
 		}
 

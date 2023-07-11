@@ -23,7 +23,8 @@ int main()
 		std::cout << '\n';
 	}
 	std::cout << '\n';
-	auto value = db.get_hash_val("hwllo");
+	std::vector<bool> value = db.get_hash_val("hwllo");
+	std::copy(value.begin(), value.end(), os_it);
 	db.z_score_normalize().save_to(std::cout);
 	std::cin.get();
 }
