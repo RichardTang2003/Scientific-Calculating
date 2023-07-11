@@ -24,7 +24,6 @@ int main()
 	}
 	std::cout << '\n';
 	auto value = db.get_hash_val("hwllo");
-	std::copy(value.cbegin(), value.cend(), os_it);
 	db.z_score_normalize().save_to(std::cout);
 	std::cin.get();
 }
