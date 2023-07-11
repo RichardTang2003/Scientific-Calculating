@@ -5,12 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mathmetical-Modeling-Tools", "Mathmetical-Modeling-Tools", "{C3B3BEBB-AEDA-47A6-B498-728A48B6D835}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simulated_annealing_for_minimization", "src\simulated_annealing_for_minimization\simulated_annealing_for_minimization.vcxproj", "{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{E3C7548C-6836-478E-A418-A62071C02481} = {E3C7548C-6836-478E-A418-A62071C02481}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simulated_annealing_for_traveller_problem", "src\simulated_annealing_for_traveller_problem\simulated_annealing_for_traveller_problem.vcxproj", "{41B57D8D-C10F-4F98-A71D-A571D26F696F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simulated_annealing", "src\simulated_annealing_for_traveller_problem\simulated_annealing_for_traveller_problem.vcxproj", "{41B57D8D-C10F-4F98-A71D-A571D26F696F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tools", "src\tools\tools.vcxproj", "{E3C7548C-6836-478E-A418-A62071C02481}"
 EndProject
@@ -32,14 +27,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Debug|x64.ActiveCfg = Debug|x64
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Debug|x64.Build.0 = Debug|x64
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Debug|x86.ActiveCfg = Debug|Win32
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Debug|x86.Build.0 = Debug|Win32
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Release|x64.ActiveCfg = Release|x64
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Release|x64.Build.0 = Release|x64
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Release|x86.ActiveCfg = Release|Win32
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1}.Release|x86.Build.0 = Release|Win32
 		{41B57D8D-C10F-4F98-A71D-A571D26F696F}.Debug|x64.ActiveCfg = Debug|x64
 		{41B57D8D-C10F-4F98-A71D-A571D26F696F}.Debug|x64.Build.0 = Debug|x64
 		{41B57D8D-C10F-4F98-A71D-A571D26F696F}.Debug|x86.ActiveCfg = Debug|Win32
@@ -93,7 +80,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A33D206F-8A98-4A2B-A0B4-2E1F72AA3CF1} = {C3B3BEBB-AEDA-47A6-B498-728A48B6D835}
 		{41B57D8D-C10F-4F98-A71D-A571D26F696F} = {C3B3BEBB-AEDA-47A6-B498-728A48B6D835}
 		{E3C7548C-6836-478E-A418-A62071C02481} = {C3B3BEBB-AEDA-47A6-B498-728A48B6D835}
 		{35493C6A-BB9D-4AD4-930E-B091B9682F0D} = {13B3E5EA-23E4-4D9C-A4EA-3A6D41BA1E20}

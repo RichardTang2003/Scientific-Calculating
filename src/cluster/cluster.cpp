@@ -8,9 +8,36 @@
 #include <numeric>
 #include <iterator>
 #include "../tools/data_processing.h"
+#include "random_hash_cluster.h"
+
+void k_means_example();
 
 
 int main()
+{
+	matools::VectorDB db("data.txt");
+	std::cout << db.data() << std::endl;
+	std::ostream_iterator<bool> os_it(std::cout, " ");
+	for (auto i : db.m_hash_val) {
+		std::copy(i.cbegin(), i.cend(), os_it);
+		std::cout << '\n';
+	}
+	std::cout << '\n';
+	auto value = db.get_hash_val("hwllo");
+	std::copy(value.cbegin(), value.cend(), os_it);
+	db.z_score_normalize().save_to(std::cout);
+	std::cin.get();
+}
+
+
+
+
+
+
+
+
+
+void k_means_example()
 {
 	std::string filename;
 	std::ifstream infile;

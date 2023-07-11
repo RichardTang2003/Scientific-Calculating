@@ -219,7 +219,7 @@ namespace matools {
 	}
 
 	template<typename Derived>
-	typename Derived z_score_copy(const Eigen::MatrixBase<Derived>& m, OperationAxis axis = OperationAxis::Col) {
+	Derived z_score_copy(const Eigen::MatrixBase<Derived>& m, OperationAxis axis = OperationAxis::Col) {
 		typename Derived::Index size = axis == OperationAxis::Col ? m.cols() : m.rows();
 		Derived copy(m.rows(), m.cols());
 

@@ -18,5 +18,16 @@
     <ClCompile Include="cluster.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="random_hash_cluster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\tools\data_processing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="random_hash_cluster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
