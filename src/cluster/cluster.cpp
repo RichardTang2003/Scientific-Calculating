@@ -25,7 +25,9 @@ int main()
 	std::cout << '\n';
 	std::vector<bool> value = db.get_hash_val("hwllo");
 	std::copy(value.begin(), value.end(), os_it);
-	db.z_score_normalize().save_to(std::cout);
+	std::vector<Eigen::MatrixXd::Index> deleted_rows{1, 2};
+	db.erase_rows(deleted_rows);
+	db.save_to(std::cout);
 	std::cin.get();
 }
 

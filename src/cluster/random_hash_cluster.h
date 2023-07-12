@@ -25,30 +25,21 @@ namespace matools
 		VectorDB& operator>>(std::ostream& os) { return save_to(os); };
 
 
-		Eigen::MatrixXd& data() { return m_data; }
-		Eigen::VectorXd get_vector(std::string& key)
-		{
-			if (m_row_label_table.find(key) != m_row_label_table.end())
-				return m_data.row(m_row_label_table[key]);
-			else
-			{
-				std::cout << "Warning: No matching entry \"" << key << "\" found in database!\n";
-				static Eigen::Vector<double, 0> empty_vector;
-				return empty_vector;
-			}
-		}
+		inline Eigen::MatrixXd& data() { return m_data; }
+		inline Eigen::VectorXd get_vector(const std::string& key);
+		inline double get_value(const std::string& key, const Eigen::MatrixXd::Index index);
 		VectorDB& set_label(const std::string& old_name, const std::string& new_name);
 		VectorDB& save_to(std::ostream& os);
 		VectorDB& save_to(const std::string& filename);
 		VectorDB& load_from(const std::string& filename);
 		VectorDB& push_back(const std::string& key, const Eigen::Matrix<double, 1, Eigen::Dynamic>& data);
 		VectorDB& erase(const std::string& key);
-		VectorDB& z_score_normalize()
-		{
-			z_score(m_data);
-			return *this;
-		}
-		std::vector<bool>& get_hash_val(const std::string& key)
+		VectorDB& erase(const Eigen::MatrixXd::Index& index);
+		VectorDB& erase_rows(std::vector<typename Eigen::MatrixXd::Index>& rowIndices);
+		VectorDB& erase_rows(const std::vector<std::string>& keys);
+		VectorDB& rehash(const uint32_t times);
+		inline VectorDB& z_score_normalize() { z_score(m_data); return *this; }
+		inline std::vector<bool>& get_hash_val(const std::string& key)
 		{
 			if (m_row_label_table.find(key) != m_row_label_table.end())
 				return m_hash_val[m_row_label_table[key]];
@@ -59,7 +50,7 @@ namespace matools
 				return empty_vector;
 			}
 		}
-		VectorDB& clear()
+		inline VectorDB& clear()
 		{
 			Eigen::MatrixXd().swap(m_data);
 			Eigen::MatrixXd().swap(m_hash_rules);
@@ -78,7 +69,7 @@ namespace matools
 		std::vector<std::string> m_label;
 		Eigen::MatrixXd::Index m_dimension;
 
-		std::vector<bool> hash(const Eigen::VectorXd& it)
+		inline std::vector<bool> hash(const Eigen::VectorXd& it)
 		{
 			std::vector<bool> hash_value;
 			for (const auto& vector : m_hash_rules.rowwise())
@@ -89,7 +80,7 @@ namespace matools
 
 			return hash_value;
 		}
-		void generate_hash_rules(const Eigen::MatrixXd::Index& bits)
+		inline void generate_hash_rules(const Eigen::MatrixXd::Index& bits)
 		{
 			std::srand((unsigned int)std::time(0));
 			m_hash_rules = Eigen::MatrixXd::Random(bits, m_dimension);
