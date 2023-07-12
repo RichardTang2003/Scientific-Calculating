@@ -163,13 +163,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <UseMSVC>true</UseMSVC>
       <CCppSupport>Cpp17Support</CCppSupport>
       <CheckUnicodeSecurity>true</CheckUnicodeSecurity>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
       <OpenMP>GenerateParallelCode</OpenMP>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -203,9 +204,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <LanguageStandard_C>Default</LanguageStandard_C>
       <CCppSupport>Cpp17Support</CCppSupport>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <UseMSVC>false</UseMSVC>
       <FSYCLEarlyOptimizations>Yes</FSYCLEarlyOptimizations>
@@ -215,6 +216,7 @@
       <OptimizationDiagnosticLevel>Level3</OptimizationDiagnosticLevel>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -253,6 +255,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cluster.cpp" />
+    <ClCompile Include="db_client.cpp" />
     <ClCompile Include="random_hash_cluster.cpp" />
   </ItemGroup>
   <ItemGroup>

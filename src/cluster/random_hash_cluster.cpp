@@ -75,7 +75,7 @@ namespace matools
 		return *this;
 	}
 
-	inline Eigen::VectorXd VectorDB::get_vector(const std::string& key)
+	Eigen::VectorXd VectorDB::get_vector(const std::string& key)
 	{
 		if (m_row_label_table.find(key) != m_row_label_table.end())
 		{
@@ -89,7 +89,7 @@ namespace matools
 		}
 	}
 
-	inline double VectorDB::get_value(const std::string& key, const Eigen::MatrixXd::Index index)
+	double VectorDB::get_value(const std::string& key, const Eigen::MatrixXd::Index index)
 	{
 		if (m_row_label_table.find(key) != m_row_label_table.end())
 		{
@@ -121,6 +121,8 @@ namespace matools
 		Eigen::MatrixXd::Index i = m_row_label_table.at(key);
 		m_row_label_table.erase(key);
 		m_row_label_table.emplace(new_name, i);
+
+		return *this;
 	}
 
 	VectorDB& VectorDB::rehash(const uint32_t times)
@@ -128,10 +130,26 @@ namespace matools
 		generate_hash_rules(times);
 		std::vector<std::vector<bool>>().swap(m_hash_val);
 		m_hash_val.resize(m_data.rows());
-#pragma omp parallel for
-		for (Eigen::MatrixXd::Index i = 0; i <= m_data.rows() - 1; ++i) {
+		for (Eigen::MatrixXd::Index i = 0; i < m_data.rows(); ++i) {
 			m_hash_val[i] = hash(m_data.row(i));
 		}
+
+		return *this;
+	}
+
+	VectorDB& VectorDB::push_back(const std::string& key, const Eigen::RowVectorXd& data)
+	{
+		m_label.push_back(key);
+		m_row_label_table.emplace(key, m_data.rows()); // here m_data.rows() == last row index + 1, namely the next index.
+
+		// processing the matrix data
+		m_data.conservativeResize(m_data.rows() + 1, m_data.cols());
+		m_data.row(m_data.rows() - 1) = data;
+
+		// add hash value
+		m_hash_val.push_back(hash(data));
+
+		return *this;
 	}
 
 	VectorDB& VectorDB::erase(const std::string& key)
@@ -182,7 +200,6 @@ namespace matools
 		return *this;
 	}
 
-
 	VectorDB& VectorDB::erase_rows(const std::vector<std::string>& keys)
 	{
 		std::vector<typename Eigen::MatrixXd::Index> rowIndices;
@@ -202,8 +219,6 @@ namespace matools
 
 		return erase_rows(rowIndices);
 	}
-
-
 
 	VectorDB& VectorDB::erase_rows(std::vector<typename Eigen::MatrixXd::Index>& row_indices)
 	{
@@ -248,7 +263,7 @@ namespace matools
 			m_hash_val.erase(m_hash_val.begin() + *it);
 		}
 
-		//重新生成对应table
+		//重新生成对应 table
 		std::unordered_map<std::string, typename Eigen::MatrixXd::Index>().swap(m_row_label_table);
 
 		for (Eigen::MatrixXd::Index i = 0; i < m_label.size(); ++i) {
@@ -258,7 +273,58 @@ namespace matools
 		return *this;
 	}
 
+	std::vector<bool>& VectorDB::get_hash_val(const std::string& key)
+	{
+		if (m_row_label_table.find(key) != m_row_label_table.end())
+			return m_hash_val[m_row_label_table[key]];
+		else
+		{
+			std::cout << "Warning: No matching entry \"" << key << "\" found in database!\n";
+			static std::vector<bool> empty_vector;
+			return empty_vector;
+		}
+	}
 
+	VectorDB& VectorDB::save_hash_table_to(std::ostream& os)
+	{
+		for (Eigen::MatrixXd::Index i = 0; i < m_hash_val.size(); ++i)
+		{
+			os << m_label[i] << ' ';
+			std::ostream_iterator<double> os_it(os, " ");
+			std::copy(m_hash_val[i].cbegin(), m_hash_val[i].cend(), os_it);
+			os << '\n';
+		}
+
+		return *this;
+	}
+
+	VectorDB& VectorDB::save_hash_table_to(const std::string& filename)
+	{
+		std::ofstream out(filename);
+		if (!out) {
+			std::cout << "Unable to open " << filename << ".\n";
+			return *this;
+		}
+		return save_hash_table_to(out);
+	}
+
+	std::vector<bool> VectorDB::hash(const Eigen::VectorXd& it)
+	{
+		std::vector<bool> hash_value;
+		for (const auto& vector : m_hash_rules.rowwise())
+		{
+			bool which_side = (it.dot(vector) >= 0);
+			hash_value.emplace_back(which_side);
+		}
+
+		return hash_value;
+	}
+
+	void VectorDB::generate_hash_rules(const Eigen::MatrixXd::Index& bits)
+	{
+		std::srand((unsigned int)std::time(0));
+		m_hash_rules = Eigen::MatrixXd::Random(bits, m_dimension);
+	}
 
 	Eigen::MatrixXd VectorDB::load_name_matrix(const std::string& filename, std::vector<std::string>& row_label, const char delimiter)
 	{
@@ -307,4 +373,5 @@ namespace matools
 
 		return Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>>(data.data(), row_label.size(), cols);
 	}
+
 }

@@ -11,30 +11,37 @@
 #include "random_hash_cluster.h"
 
 void k_means_example();
-
+void vector_db_client();
 
 int main()
 {
-	matools::VectorDB db("data.txt");
-	std::cout << db.data() << std::endl;
-	std::ostream_iterator<bool> os_it(std::cout, " ");
-	for (auto i : db.m_hash_val) {
-		std::copy(i.cbegin(), i.cend(), os_it);
-		std::cout << '\n';
-	}
-	std::cout << '\n';
-	std::vector<bool> value = db.get_hash_val("hwllo");
-	std::copy(value.begin(), value.end(), os_it);
-	std::vector<Eigen::MatrixXd::Index> deleted_rows{1, 2};
-	db.erase_rows(deleted_rows);
-	db.save_to(std::cout);
-	std::cin.get();
+	vector_db_client();
 }
 
 
 
 
+void vector_db_client()
+{
+	using matools::VectorDB;
+	using namespace matools::VectorDB_client;
+	VectorDB db;
+	MenuBase* now_ptr = new MainMenu(db);
 
+	while (now_ptr)
+	{
+		now_ptr->line();
+		now_ptr->show();
+		bool go_back = 0;
+		auto next_ptr = now_ptr->get(go_back);
+		if (go_back)
+		{
+			delete now_ptr;
+		}
+		now_ptr = next_ptr;
+	}
+
+}
 
 
 
