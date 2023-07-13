@@ -17,11 +17,20 @@ namespace matools
 
 	class VectorDB
 	{
+		Eigen::MatrixXd m_data;
+		Eigen::MatrixXd m_hash_rules;
+		std::unordered_map<std::string, typename Eigen::MatrixXd::Index> m_row_label_table;
+		std::vector<std::vector<bool>> m_hash_val;
+		std::vector<std::string> m_label;
+		Eigen::MatrixXd::Index m_dimension;
+
 	public:
 		VectorDB() = default;
 		VectorDB(const std::string& filename);
 		VectorDB(Eigen::MatrixXd&& m);
+		VectorDB(VectorDB& that) = delete;
 
+		VectorDB& operator=(VectorDB& that) = delete;
 		VectorDB& operator>>(std::ostream& os) { return save_to(os); };
 		bool operator==(const VectorDB& that) const { return m_hash_val == that.m_hash_val; }
 
@@ -57,15 +66,8 @@ namespace matools
 		}
 
 	private:
-		Eigen::MatrixXd m_data;
-		Eigen::MatrixXd m_hash_rules;
-		std::unordered_map<std::string, typename Eigen::MatrixXd::Index> m_row_label_table;
-		std::vector<std::vector<bool>> m_hash_val;
-		std::vector<std::string> m_label;
-		Eigen::MatrixXd::Index m_dimension;
-
-		inline std::vector<bool> hash(const Eigen::VectorXd& it);
-		inline void generate_hash_rules(const Eigen::MatrixXd::Index& bits);
+		std::vector<bool> hash(const Eigen::VectorXd& it);
+		void generate_hash_rules(const Eigen::MatrixXd::Index& bits);
 
 		Eigen::MatrixXd load_name_matrix(const std::string& filename, std::vector<std::string>& row_label, const char delimiter = ',');
 
