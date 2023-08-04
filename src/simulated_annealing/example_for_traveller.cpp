@@ -1,7 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "../tools/data_processing.h"
 #include <random>
+#include "../tools/data_processing.h"
+#include "../../deps/Xoshiro-cpp/XoshiroCpp.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -9,17 +10,19 @@
 
 using matools::load_vector;
 
-inline unsigned random(const unsigned a, const unsigned b);
-inline double random();
-unsigned z(std::vector<unsigned> route, std::vector<std::vector<unsigned>> mat);
+[[nodiscard]] inline static unsigned random(const unsigned a, const unsigned b) noexcept;
+[[nodiscard]] inline static double random() noexcept;
+[[nodiscard]] static unsigned z(std::vector<unsigned> route, std::vector<std::vector<unsigned>> mat) noexcept;
 
 std::vector<std::vector<unsigned>> mat;
 int traveller()
 {
 	mat = load_vector<unsigned>("data/matrix.txt");
-	std::ofstream output("data/saft_output.txt");
+	if (mat.empty()) return EXIT_FAILURE;
+	std::ofstream output("saft_output.txt");
 	if (!output) {
 		std::cerr << "can't create file..." << std::endl;
+		return EXIT_FAILURE;
 	}
 	std::vector<unsigned> route{1, 2, 3, 4, 5, 6, 7, 1};
 	unsigned z_p = z(route, mat);
@@ -73,42 +76,25 @@ int traveller()
 	return 0;
 }
 
-inline double random()
+[[nodiscard]] inline static double random() noexcept
 {
 
-	// 创建一个随机设备
-	std::random_device rd;
+	auto seed = XoshiroCpp::DefaultSeed;
+	XoshiroCpp::Xoroshiro128PlusPlus gen(seed);
 
-	// 使用随机设备初始化一个随机数生成器
-	std::mt19937 gen(rd());
-
-	// 创建一个取值范围为[0,1)的实数分布
-	std::uniform_real_distribution<> dis(0, 1);
-
-	// 生成随机数
-	double random_number = dis(gen);
-
-	return random_number;
+	return XoshiroCpp::DoubleFromBits(gen());
 
 }
-inline unsigned random(const unsigned a, const unsigned b)
+[[nodiscard]] inline static unsigned random(const unsigned a, const unsigned b) noexcept
 {
-	// 创建一个随机设备
-	std::random_device rd;
+	auto seed = XoshiroCpp::DefaultSeed;
+	XoshiroCpp::Xoshiro128Plus gen(seed);
+	std::uniform_int_distribution<unsigned> dis(a, b);
 
-	// 使用随机设备种子初始化一个随机数生成器
-	std::mt19937 gen(rd());
-
-	// 创建一个取值范围
-	std::uniform_int_distribution<> dist(a, b);
-
-	// 生成随机数
-	unsigned random_number = dist(gen);
-
-	return random_number;
+	return dis(gen);
 }
 
-unsigned z(const std::vector<unsigned> route, const std::vector<std::vector<unsigned>> mat)
+[[nodiscard]] static unsigned z(const std::vector<unsigned> route, const std::vector<std::vector<unsigned>> mat) noexcept
 {
 	unsigned total = 0;
 	for (auto i = route.begin() + 1; i != route.end(); ++i) {

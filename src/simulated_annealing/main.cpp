@@ -15,5 +15,5 @@ int traveller();
 
 int main()
 {
-	minimization();
+	traveller();
 }

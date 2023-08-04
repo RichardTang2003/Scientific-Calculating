@@ -93,8 +93,10 @@ namespace matools
 
 		public:
 			virtual MenuBase* get(bool& go_back) = 0;
-			MenuBase* enter();
-			MenuBase* exit();
+			MenuBase* exit()
+			{
+				return m_upper_ptr;
+			}
 			MenuBase& show();
 			void line() { std::cout << "------------------------\n"; }
 		};

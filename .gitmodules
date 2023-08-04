@@ -1,0 +1,3 @@
+[submodule "deps/Xoshiro-cpp"]
+	path = deps/Xoshiro-cpp
+	url = https://github.com/Reputeless/Xoshiro-cpp.git

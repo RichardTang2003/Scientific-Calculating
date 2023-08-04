@@ -4,9 +4,11 @@
 #include <cmath>
 #include <random>
 #include <utility>
+#include <iostream>
+#include <fstream>
 #include <algorithm>
+#include "../../deps/Xoshiro-cpp/XoshiroCpp.hpp"
 
-// To find a status with lower energy according to the given condition
 template<typename status, typename count, typename energy_function, typename temperature_function, typename next_function, typename generator>
 status simulated_annealing(status i_old, count c, const energy_function& ef, const temperature_function& tf, const next_function& nf, generator& g) {
 

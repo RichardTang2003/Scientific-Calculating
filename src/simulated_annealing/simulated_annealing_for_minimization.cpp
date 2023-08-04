@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <cmath>
 #include <fstream>
 #include "simulated_annealing.h"
@@ -28,20 +28,20 @@ int minimization() {
 	double result = simulated_annealing<double, int, decltype(&energy), decltype(&temperature), decltype(&next), std::default_random_engine>
 		(initial_x, iteration_times, energy, temperature, next, generator);
 
-	std::ofstream output("sa_output.txt");
+	std::wofstream output("sa_output.txt");
 	if (output) {
-		std::cout << "结果已写入 sa_output.txt 文件" << std::endl;
-		output << result << " <-- 最优状态" << '\n' << energy(result) << " <-- 最优解" << '\n' << '\n'
-			<< initial_x << " <-- 起始状态" << '\n' << energy(initial_x) << " <-- 起始解" << '\n'
-			<< iteration_times << " <-- 迭代次数" << std::endl;
+		std::wcout << L"结果已写入 sa_output.txt 文件" << std::endl;
+		output << result << L" <-- 最优状态" << '\n' << energy(result) << L" <-- 最优解" << '\n' << '\n'
+			<< initial_x << L" <-- 起始状态" << '\n' << energy(initial_x) << L" <-- 起始解" << '\n'
+			<< iteration_times << L" <-- 迭代次数" << std::endl;
 	}
 	else {
-		std::cout << "无法写入 sa_output.txt 文件" << '\n';
-		std::cout << result << " <-- 最优状态" << '\n' << energy(result) << " <-- 最优解" << '\n' << '\n'
-			<< initial_x << " <-- 起始状态" << '\n' << energy(initial_x) << " <-- 起始解" << '\n'
-			<< iteration_times << " <-- 迭代次数" << std::endl;
+		std::wcout << L"无法写入 sa_output.txt 文件" << '\n';
+		std::wcout << result << L" <-- 最优状态" << '\n' << energy(result) << L" <-- 最优解" << '\n' << '\n'
+			<< initial_x << L" <-- 起始状态" << '\n' << energy(initial_x) << L" <-- 起始解" << '\n'
+			<< iteration_times << L" <-- 迭代次数" << std::endl;
 
-		std::cin >> result; // 窗口停留
+		std::cin.get();
 	}
 	output.close();
 	return 0;
