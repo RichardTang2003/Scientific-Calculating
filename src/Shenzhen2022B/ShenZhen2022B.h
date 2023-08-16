@@ -37,9 +37,8 @@ struct TreeNode {
 	const User* user;
 	std::shared_ptr<TreeNode> left = nullptr;
 	std::shared_ptr<TreeNode> right = nullptr;
-	std::shared_ptr<TreeNode>
 
-		TreeNode(const User* u) : user(u) {}
+	TreeNode(const User* u) : user(u) {}
 };
 
 inline std::istream& operator>>(std::istream& is, User& user)
