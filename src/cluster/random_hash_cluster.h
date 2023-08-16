@@ -19,10 +19,10 @@ namespace matools
 	{
 		Eigen::MatrixXd m_data;
 		Eigen::MatrixXd m_hash_rules;
-		std::unordered_map<std::string, typename Eigen::MatrixXd::Index> m_row_label_table;
+		std::unordered_map<std::string, typename std::size_t> m_row_label_table;
 		std::vector<std::vector<bool>> m_hash_val;
 		std::vector<std::string> m_label;
-		Eigen::MatrixXd::Index m_dimension;
+		std::size_t m_dimension;
 
 	public:
 		VectorDB() = default;
@@ -36,11 +36,11 @@ namespace matools
 
 		Eigen::MatrixXd& data() { return m_data; }
 		Eigen::VectorXd get_vector(const std::string& key);
-		double get_value(const std::string& key, const Eigen::MatrixXd::Index index);
+		double get_value(const std::string& key, const std::size_t index);
 		std::vector<bool>& get_hash_val(const std::string& key);
 		VectorDB& save_hash_table_to(std::ostream& os);
 		VectorDB& save_hash_table_to(const std::string& filename);
-		Eigen::MatrixXd::Index get_dimension() { return m_dimension; }
+		std::size_t get_dimension() { return m_dimension; }
 		bool has(const std::string& key) { return m_row_label_table.find(key) != m_row_label_table.end(); }
 		VectorDB& set_label(const std::string& old_name, const std::string& new_name);
 		VectorDB& save_to(std::ostream& os);
@@ -58,7 +58,7 @@ namespace matools
 		{
 			Eigen::MatrixXd().swap(m_data);
 			Eigen::MatrixXd().swap(m_hash_rules);
-			std::unordered_map<std::string, typename Eigen::MatrixXd::Index>().swap(m_row_label_table);
+			std::unordered_map<std::string, typename std::size_t>().swap(m_row_label_table);
 			std::vector<std::vector<bool>>().swap(m_hash_val);
 			std::vector<std::string>().swap(m_label);
 			m_dimension = 0;
@@ -67,7 +67,7 @@ namespace matools
 
 	private:
 		std::vector<bool> hash(const Eigen::VectorXd& it);
-		void generate_hash_rules(const Eigen::MatrixXd::Index& bits);
+		void generate_hash_rules(const std::size_t& bits);
 
 		Eigen::MatrixXd load_name_matrix(const std::string& filename, std::vector<std::string>& row_label, const char delimiter = ',');
 
@@ -86,10 +86,18 @@ namespace matools
 			std::string m_message;
 
 			MenuBase(VectorDB& db, MenuBase* upper_ptr, std::string message, std::string help, std::string header) :
-				m_db_ptr(&db), m_upper_ptr(upper_ptr), m_help(help), m_message(message), m_header(header) {}
+				m_db_ptr(&db), m_upper_ptr(upper_ptr), m_header(header), m_help(help), m_message(message) {}
 
 			MenuBase(VectorDB& db, MenuBase* upper_ptr, std::string message, std::string help) :
-				m_db_ptr(&db), m_upper_ptr(upper_ptr), m_help(help), m_message(message), m_header() {}
+				m_db_ptr(&db), m_upper_ptr(upper_ptr), m_header(), m_help(help), m_message(message) {}
+
+		public:
+			MenuBase() = delete;
+			MenuBase(MenuBase& rhs) = delete;
+			MenuBase& operator=(MenuBase& rhs) = delete;
+			MenuBase(MenuBase&& rhs) = delete;
+			MenuBase& operator=(MenuBase&& rhs) = delete;
+			virtual ~MenuBase() = default;
 
 		public:
 			virtual MenuBase* get(bool& go_back) = 0;
