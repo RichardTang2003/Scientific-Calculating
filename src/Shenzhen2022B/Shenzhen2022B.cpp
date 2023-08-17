@@ -2,12 +2,47 @@
 #include "kMeans.h"
 #include "MST.h"
 #include <thread>
+#include <mutex>
+std::mutex userMutex;
+std::mutex resultMutex;
 
 int main()
 {
+	Q1();
+}
+
+
+
+
+void Q1SingleThread(const std::vector<User>& main_user_v, double& min_cost, std::shared_ptr<Node>& result, std::size_t& times, std::size_t clusters, const Point& powerPos)
+{
+	userMutex.lock();
+	std::vector<User> user_v(main_user_v);
+	userMutex.unlock();
+
+	auto root = buildRoute(user_v, clusters, powerPos, false);
+	calculateLoad(root);
+	calculateReliability(root);
+	double cost = calculateCost(root);
+
+	resultMutex.lock();
+	if (cost < min_cost)
+	{
+		result = root;
+		min_cost = cost;
+		++times;
+	}
+	resultMutex.unlock();
+};
+
+int Q1()
+{
 	// 读取数据
+	double x, y;
 #ifdef _DEBUG
 	std::ifstream infile("data/user.txt");
+	x = 898.40256;
+	y = 1007.05848;
 #endif
 #ifndef _DEBUG
 	std::ifstream infile("user.txt");
@@ -24,9 +59,18 @@ int main()
 			std::cerr << "Unable to open " << filename << "\nTry again:" << std::endl;
 		}
 	}
+	std::cerr << "Enter Position for PowerStation: " << std::endl;
+	std::cin >> x >> y;
 #endif
-
+	Point powerPos{ x, y };
+	
+	double min_cost = DBL_MAX;
+	std::size_t sameCount = 0;
+	std::size_t preTimes = 100;
+	std::size_t times = 0;
+	std::shared_ptr<Node> result = nullptr;
 	std::vector<User> user_v;
+
 	user_v.reserve(30);
 	while (infile) {
 		User temp;
@@ -35,16 +79,42 @@ int main()
 			user_v.push_back(temp);
 	}
 
-	std::size_t clusters = 7;
-	auto root = buildRoute(user_v, clusters);
-	calculateLoad(root);
-	calculateReliability(root);
-	double cost = calculateCost(root);
+	unsigned int num_cores = std::thread::hardware_concurrency();
+	std::cout << "Thread Number:" << num_cores << std::endl;
+
+	while (times < 1000)
+	{
+		// 创建线程池并启动线程
+		std::vector<std::thread> threads;
+
+		for (std::size_t i = 0; i < num_cores; ++i)
+		{
+			threads.emplace_back(Q1SingleThread, std::ref(user_v), std::ref(min_cost), std::ref(result), std::ref(times), i, powerPos);
+		}
+
+		// 等待所有线程完成
+		for (std::thread& thread : threads) {
+			thread.join();
+		}
+
+
+		if (preTimes != times)
+		{
+			preTimes = times;
+			std::cout << "finish " << times << " iterations\n";
+		}
+		else
+		{
+			if(sameCount++ > 1000)
+				break;
+		}
+
+	}
 
 
 	std::cout << "============ Final RESULT ===========\n";
-	printTreeData(root);
-	std::cout << "Finished! Total Cost: " << cost << std::endl;
+	printTreeData(result);
+	std::cout << "Finished! Total Cost: " << min_cost << std::endl;
 
 #ifndef _DEBUG
 	std::cin.get();
@@ -53,7 +123,7 @@ int main()
 }
 
 
-std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& clusters, bool log)
+std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& clusters, const Point& powerPos, bool log)
 {
 	// 对用户进行聚类分析
 	std::vector<Point> center_v;
@@ -94,7 +164,7 @@ std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& cluster
 	assert(centerNodes.size() == userNodes_v.size());
 
 	// 电源节点
-	std::shared_ptr<User> powerUser = std::make_shared<User>(Point{ 898.40256, 1007.05848 }, 0);
+	std::shared_ptr<User> powerUser = std::make_shared<User>(powerPos, 0);
 	std::shared_ptr<Node> powerNode = std::make_shared<Node>(powerUser);
 	// 构造主线
 	constructMainLine(powerNode, centerNodes);

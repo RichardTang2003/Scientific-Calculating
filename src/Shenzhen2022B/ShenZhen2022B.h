@@ -22,6 +22,10 @@ static constexpr double SWITCH_PRICE = 56.8;
 static constexpr double SUB_SWITCH_PRICE = 2.6;
 static constexpr double SCALER = 0.001;
 
+
+int Q1();
+
+
 using Point = std::array<double, 2>;
 struct User
 {
@@ -209,7 +213,7 @@ inline std::ostream& operator<<(std::ostream& os, const Point& pos)
  *
  * @result 指向根节点
  */
-std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& clusters, bool log = true);
+std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& clusters, const Point& powerPos, bool log);
 
 /**
  * @brief 计算各节点的负载

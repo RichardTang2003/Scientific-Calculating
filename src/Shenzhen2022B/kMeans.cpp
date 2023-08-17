@@ -1,7 +1,8 @@
 #include "kMeans.h"
 
-void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector<std::vector<User>>& result_v2, const std::size_t clusters, const std::size_t iterations)
+void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector<std::vector<User>>& result_v2, const std::size_t maxClusters, const std::size_t iterations)
 {
+	std::size_t clusters = std::max<const std::size_t>(3, std::min(user_v.size() / 2, maxClusters));
 	for (User& u : user_v)
 	{
 		std::vector<double> temp(clusters, 1.0);
@@ -11,8 +12,8 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 	temp_v.swap(center_v);
 
 	// 生成随机序列供初始聚类中心使用
-	static std::random_device rd;
-	static XoshiroCpp::Xoroshiro128Plus gen(rd());
+	std::random_device rd;
+	XoshiroCpp::Xoroshiro128Plus gen(rd());
 	std::uniform_int_distribution<std::size_t> dist(0, user_v.size() - 1);
 	assert(user_v.size() > clusters);
 
@@ -22,9 +23,9 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 		std::size_t num = dist(gen);
 		if (std::find(rand_v.begin(), rand_v.end(), num) == rand_v.end()) {
 			rand_v.push_back(num);
-#ifdef _DEBUG
-			std::cout << "random int:" << num << '\n';
-#endif
+//#ifdef _DEBUG
+//			std::cout << "random int:" << num << '\n';
+//#endif
 		}
 	}
 
@@ -41,14 +42,14 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			assert(user_v.at(index).pos.at(0) != 0 || user_v.at(index).pos.at(1) != 0);
 			return user_v.at(index).pos;
 		});
-#ifdef _DEBUG
-	std::cout << "Initial center position: ";
-	for (auto& i : center_v)
-	{
-		std::cout << '[' << i << "] ";
-	}
-	std::cout << std::endl;
-#endif
+//#ifdef _DEBUG
+//	std::cout << "Initial center position: ";
+//	for (auto& i : center_v)
+//	{
+//		std::cout << '[' << i << "] ";
+//	}
+//	std::cout << std::endl;
+//#endif
 
 	// 聚类主循环
 	for (int n = 0; n < iterations; ++n) {
@@ -63,12 +64,13 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			std::vector<double> distance_a(clusters);
 			for (std::size_t i = 0; i < clusters; ++i)
 			{
-				distance_a[i] = u.weight[i] * calculateDistance(u.pos, center_v.at(i));
+				distance_a.at(i) = u.weight.at(i) * calculateDistance(u.pos, center_v.at(i));
 			}
 
 			// 取最小的两个距离
-			Point minDistance_a;
+			std::array<double, 2> minDistance_a;
 			std::partial_sort_copy(distance_a.begin(), distance_a.end(), minDistance_a.begin(), minDistance_a.end());
+			assert(minDistance_a.at(0) < minDistance_a.at(1));
 
 			// 根据距离判断接受第二近中心点的概率
 			double rand = XoshiroCpp::DoubleFromBits(gen());
@@ -77,17 +79,17 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			{
 				// 接受最近中心点
 				std::size_t index = std::find(distance_a.cbegin(), distance_a.cend(), minDistance_a.at(0)) - distance_a.cbegin();
-				assert(index <= clusters);
+				assert(index < cluster_v2.size());
 				cluster_v2.at(index).push_back(u);
 			}
 			else
 			{
 				// 接受第二中心点
-#ifdef _DEBUG
-				std::cout << "accept second near center: random number is " << rand << "\n";
-#endif
+//#ifdef _DEBUG
+//				std::cout << "accept second near center: random number is " << rand << "\n";
+//#endif
 				std::size_t index = std::find(distance_a.cbegin(), distance_a.cend(), minDistance_a.at(1)) - distance_a.cbegin();
-				assert(index <= clusters);
+				assert(index < cluster_v2.size());
 				cluster_v2.at(index).push_back(u);
 			}
 		}
@@ -130,14 +132,14 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			assert(0 <= x);
 			assert(0 <= y);
 		}
-#ifdef _DEBUG
-		std::cout << "Center location for iteration " << n << " :\n";
-		for (auto& i : center_v)
-		{
-			std::cout << '[' << i << "] ";
-		}
-		std::cout << std::endl;
-#endif
+//#ifdef _DEBUG
+//		std::cout << "Center location for iteration " << n << " :\n";
+//		for (auto& i : center_v)
+//		{
+//			std::cout << '[' << i << "] ";
+//		}
+//		std::cout << std::endl;
+//#endif
 	}
 
 	cluster_v2.swap(result_v2);
