@@ -4,7 +4,8 @@
 #include <iostream>
 
 
-const User* findNearestUser(const User& user, const std::vector<const User*>& nodes)
+
+const std::shared_ptr<User> findNearestUser(const User& user, const std::vector<const std::shared_ptr<User>>& nodes)
 {
 	auto compareDistance = [&user](const User* a, const User* b) {
 		return calculateDistance(user.pos, a->pos) < calculateDistance(user.pos, b->pos);
@@ -13,7 +14,7 @@ const User* findNearestUser(const User& user, const std::vector<const User*>& no
 	auto nearestIt = std::min_element(nodes.begin(), nodes.end(), compareDistance);
 
 	if (nearestIt != nodes.end()) {
-		return *nearestIt;
+		return std::make_shared<User>(*nearestIt);
 	}
 
 	return nullptr;
@@ -45,7 +46,7 @@ std::shared_ptr<TreeNode> buildBinaryTree(const std::vector<User>& users, const 
 	return node;
 }
 
-void traverseInOrder(const std::shared_ptr<TreeNode> node, std::vector<const User*>& sortedNodes)
+void traverseInOrder(const std::shared_ptr<TreeNode> node, std::vector<const std::shared_ptr<User>>& sortedNodes)
 {
 	if (!node) {
 		return;
@@ -56,7 +57,7 @@ void traverseInOrder(const std::shared_ptr<TreeNode> node, std::vector<const Use
 	traverseInOrder(node->right, sortedNodes);
 }
 
-std::shared_ptr<TreeNode> buildBalancedTree(const std::vector<const User*>& nodes, int start, int end)
+std::shared_ptr<TreeNode> buildBalancedTree(const std::vector<const std::shared_ptr<User>>& nodes, int start, int end)
 {
 	if (start > end) {
 		return nullptr;
@@ -78,7 +79,7 @@ std::shared_ptr<TreeNode> balanceBinaryTree(const std::shared_ptr<TreeNode> node
 	}
 
 	// 构建一个有序节点列表
-	std::vector<const User*> sortedNodes;
+	std::vector<const std::shared_ptr<User>> sortedNodes;
 	traverseInOrder(node, sortedNodes);
 
 	// 根据有序列表构建平衡二叉树

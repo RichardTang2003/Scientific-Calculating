@@ -18,9 +18,6 @@
     <ClCompile Include="Shenzhen2022B.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="binaryTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="kMeans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,9 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShenZhen2022B.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="binaryTree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="kMeans.h">

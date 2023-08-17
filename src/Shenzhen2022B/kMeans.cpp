@@ -1,6 +1,6 @@
 #include "kMeans.h"
 
-void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector<std::vector<User>>& result_v2, const int clusters)
+void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector<std::vector<User>>& result_v2, const std::size_t clusters, const std::size_t iterations)
 {
 	for (User& u : user_v)
 	{
@@ -51,7 +51,7 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 #endif
 
 	// 聚类主循环
-	for (int n = 0; n < ITERATIONS; ++n) {
+	for (int n = 0; n < iterations; ++n) {
 		std::vector<std::vector<User>> temp_v2(clusters);
 		temp_v2.swap(cluster_v2);
 
@@ -104,7 +104,7 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 		{
 			std::size_t size = cluster_v2.at(i).size();
 			// 计算下一次迭代的距离权重
-			if (size > 2)
+			if (size > 2 && size < 6)
 			{
 				for (User& u : cluster_v2.at(i))
 				{
