@@ -6,36 +6,14 @@
 std::mutex userMutex;
 std::mutex resultMutex;
 
+
 int main()
 {
 	Q1();
 }
 
 
-
-
-void Q1SingleThread(const std::vector<User>& main_user_v, double& min_cost, std::shared_ptr<Node>& result, std::size_t& times, std::size_t clusters, const Point& powerPos)
-{
-	userMutex.lock();
-	std::vector<User> user_v(main_user_v);
-	userMutex.unlock();
-
-	auto root = buildRoute(user_v, clusters, powerPos, false);
-	calculateLoad(root);
-	calculateReliability(root);
-	double cost = calculateCost(root);
-
-	resultMutex.lock();
-	if (cost < min_cost)
-	{
-		result = root;
-		min_cost = cost;
-		++times;
-	}
-	resultMutex.unlock();
-};
-
-int Q1()
+void Q3_pre()
 {
 	// 读取数据
 	double x, y;
@@ -63,7 +41,94 @@ int Q1()
 	std::cin >> x >> y;
 #endif
 	Point powerPos{ x, y };
+
+
+	std::vector<User> user_v;
+	user_v.reserve(30);
+	while (infile) {
+		User temp;
+		infile >> temp;
+		if (temp.id != -1)
+			user_v.push_back(temp);
+	}
 	
+	std::shared_ptr<Node> result;
+	double max = 0;
+
+#pragma omp parallel for 
+	for (std::size_t i = 1; i <= 100000; ++i)
+	{
+		std::size_t clusters = i % 20;
+		std::shared_ptr<Node> lowReliaNode;
+		auto root = buildRoute(user_v, clusters, powerPos, false);
+		calculateLoad(root);
+		calculateReliability(root);
+		calculateLowewstReliability(root, lowReliaNode);
+
+		if (lowReliaNode->getReliability() > max)
+		{
+			max = lowReliaNode->getReliability();
+			result = root;
+		}
+	}
+
+	printTreeData(result);
+	std::cout << '\n' << max;
+}
+
+
+
+
+void Q1SingleThread(const std::vector<User>& main_user_v, double& min_cost, std::shared_ptr<Node>& result, std::size_t& times, std::size_t clusters, const Point& powerPos)
+{
+	userMutex.lock();
+	std::vector<User> user_v(main_user_v);
+	userMutex.unlock();
+
+	auto root = buildRoute(user_v, clusters, powerPos, false);
+	calculateLoad(root);
+	calculateReliability(root);
+	double cost = calculateCost(root);
+
+	resultMutex.lock();
+	if (cost < min_cost)
+	{
+		result = root;
+		min_cost = cost;
+		++times;
+	}
+	resultMutex.unlock();
+};
+
+void Q1()
+{
+	// 读取数据
+	double x, y;
+#ifndef _DEBUG
+	std::ifstream infile("data/user.txt");
+	x = 898.40256;
+	y = 1007.05848;
+#endif
+#ifdef _DEBUG
+	std::ifstream infile("user.txt");
+	if (!infile)
+	{
+		std::string filename;
+		std::cerr << "Enter your data file name:" << std::endl;
+		while (std::cin >> filename) {
+			infile.open(filename);
+			if (infile) {
+				break;
+			}
+
+			std::cerr << "Unable to open " << filename << "\nTry again:" << std::endl;
+		}
+	}
+	std::cerr << "Enter Position for PowerStation: " << std::endl;
+	std::cin >> x >> y;
+#endif
+	Point powerPos{ x, y };
+
 	double min_cost = DBL_MAX;
 	std::size_t sameCount = 0;
 	std::size_t preTimes = 100;
@@ -105,7 +170,7 @@ int Q1()
 		}
 		else
 		{
-			if(sameCount++ > 1000)
+			if (sameCount++ > 1000)
 				break;
 		}
 
@@ -196,7 +261,7 @@ std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& cluster
 	return powerNode;
 }
 
-void calculateLoad(const std::shared_ptr<Node>& root)
+void calculateLoad(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev)
 {
 	assert(root);
 	assert(root->getUser_p()->id != -1);
@@ -209,14 +274,15 @@ void calculateLoad(const std::shared_ptr<Node>& root)
 
 	for (auto& child : root->getChild())
 	{
-		calculateLoad(child);
+		if (child == prev) continue;
+		calculateLoad(child, root);
 		root->addLoad(child);
 	}
 
 	return;
 }
 
-double calculateCost(const std::shared_ptr<Node>& root)
+double calculateCost(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev)
 {
 	double totalPrice = 0.0;
 	auto& parent_p = root->getParent_p();
@@ -260,13 +326,14 @@ double calculateCost(const std::shared_ptr<Node>& root)
 
 	for (auto& child : root->getChild())
 	{
-		totalPrice += calculateCost(child);
+		if (child == prev) continue;
+		totalPrice += calculateCost(child, root);
 	}
 
 	return totalPrice;
 }
 
-void calculateReliability(const std::shared_ptr<Node>& root)
+void calculateReliability(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev)
 {
 	auto& parent_p = root->getParent_p();
 	if (parent_p != nullptr)
@@ -278,7 +345,41 @@ void calculateReliability(const std::shared_ptr<Node>& root)
 
 	for (auto& child : root->getChild())
 	{
-		calculateReliability(child);
+		if (child == prev) continue;
+		calculateReliability(child, root);
 	}
 }
 
+void calculateLowewstReliability(const std::shared_ptr<Node>& root, std::shared_ptr<Node>& result)
+{
+	std::vector<std::shared_ptr<Node>> endNodes{ root };
+
+	while (true)
+	{
+		std::vector<std::shared_ptr<Node>> newNodes;
+		bool hasChild = false;
+		for (auto& node : endNodes)
+		{
+			if (!node->getChild().empty())
+			{
+				hasChild = true;
+				for (auto& child : node->getChild())
+				{
+					hasChild = true;
+					if (child == node) continue;
+					newNodes.emplace_back(child);
+				}
+			}
+		}
+		if (!hasChild) break;
+		if(!newNodes.empty())
+			newNodes.swap(endNodes);
+	}
+
+	std::sort(endNodes.begin(), endNodes.end(), [](const std::shared_ptr<Node> l, const std::shared_ptr<Node> r) -> bool
+		{
+			return l->getReliability() < r->getReliability();
+		});
+
+	result = endNodes.at(0);
+}

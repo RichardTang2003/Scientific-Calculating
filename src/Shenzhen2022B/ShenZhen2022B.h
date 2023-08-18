@@ -23,7 +23,8 @@ static constexpr double SUB_SWITCH_PRICE = 2.6;
 static constexpr double SCALER = 0.001;
 
 
-int Q1();
+void Q1();
+void Q3_pre();
 
 
 using Point = std::array<double, 2>;
@@ -205,7 +206,7 @@ inline std::ostream& operator<<(std::ostream& os, const Point& pos)
 /**
  * @brief 构造路线函数
  *
- * 随机选择初始点聚类，并使用 MST 相关算法实现最短路构造。
+ * 随机选择初始点聚类，并使用 MST 相关算法实现最短路构造。函数没有处理出现环的情况
  *
  * @param user_v 所有用户
  * @param clusters 期望的聚类数（可能会小于该数，结果储存于此）
@@ -218,42 +219,42 @@ std::shared_ptr<Node> buildRoute(std::vector<User>& user_v, std::size_t& cluster
 /**
  * @brief 计算各节点的负载
  *
- * 递归子节点个数
+ * 递归子节点个数，函数没有处理出现环的情况
  *
  * @param root 根节点入口
  *
  */
-void calculateLoad(const std::shared_ptr<Node>& root);
+void calculateLoad(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev = nullptr);
 
 /**
  * @brief 计算总价格
  *
- * 使用递归计算所有路线和开关价格总和
+ * 使用递归计算所有路线和开关价格总和，函数没有处理出现环的情况
  *
  * @param root 根节点入口
  * @param clusters 聚类个数
  *
  * @result 返回总价的值
  */
-double calculateCost(const std::shared_ptr<Node>& root);
+double calculateCost(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev = nullptr);
 
 
 /**
  * @brief 计算可靠性
  *
- * 使用递推计算每一个点的可靠性
+ * 使用递推计算每一个点的可靠性，函数没有处理出现环的情况
  *
  * @param root 根节点入口
  *
  */
-void calculateReliability(const std::shared_ptr<Node>& root);
+void calculateReliability(const std::shared_ptr<Node>& root, const std::shared_ptr<Node>& prev = nullptr);
 
 /**
- * @brief 查找最低可靠性
+ * @brief 查找最低可靠性，函数没有处理出现环的情况
  *
  * @param root 根节点入口
- *
+ * @param result 最低可靠性节点的指针
  *
  */
-
+void calculateLowewstReliability(const std::shared_ptr<Node>& root, std::shared_ptr<Node>& result);
 

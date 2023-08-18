@@ -23,9 +23,9 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 		std::size_t num = dist(gen);
 		if (std::find(rand_v.begin(), rand_v.end(), num) == rand_v.end()) {
 			rand_v.push_back(num);
-//#ifdef _DEBUG
-//			std::cout << "random int:" << num << '\n';
-//#endif
+			//#ifdef _DEBUG
+			//			std::cout << "random int:" << num << '\n';
+			//#endif
 		}
 	}
 
@@ -42,16 +42,16 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			assert(user_v.at(index).pos.at(0) != 0 || user_v.at(index).pos.at(1) != 0);
 			return user_v.at(index).pos;
 		});
-//#ifdef _DEBUG
-//	std::cout << "Initial center position: ";
-//	for (auto& i : center_v)
-//	{
-//		std::cout << '[' << i << "] ";
-//	}
-//	std::cout << std::endl;
-//#endif
+	//#ifdef _DEBUG
+	//	std::cout << "Initial center position: ";
+	//	for (auto& i : center_v)
+	//	{
+	//		std::cout << '[' << i << "] ";
+	//	}
+	//	std::cout << std::endl;
+	//#endif
 
-	// 聚类主循环
+		// 聚类主循环
 	for (int n = 0; n < iterations; ++n) {
 		std::vector<std::vector<User>> temp_v2(clusters);
 		temp_v2.swap(cluster_v2);
@@ -132,14 +132,14 @@ void kMeans(std::vector<User>& user_v, std::vector<Point>& center_v, std::vector
 			assert(0 <= x);
 			assert(0 <= y);
 		}
-//#ifdef _DEBUG
-//		std::cout << "Center location for iteration " << n << " :\n";
-//		for (auto& i : center_v)
-//		{
-//			std::cout << '[' << i << "] ";
-//		}
-//		std::cout << std::endl;
-//#endif
+		//#ifdef _DEBUG
+		//		std::cout << "Center location for iteration " << n << " :\n";
+		//		for (auto& i : center_v)
+		//		{
+		//			std::cout << '[' << i << "] ";
+		//		}
+		//		std::cout << std::endl;
+		//#endif
 	}
 
 	cluster_v2.swap(result_v2);
