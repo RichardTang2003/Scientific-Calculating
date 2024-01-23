@@ -19,7 +19,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "metropolis_hasting", "src\m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simulated_annealing", "src\simulated_annealing\simulated_annealing.vcxproj", "{41B57D8D-C10F-4F98-A71D-A571D26F696F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{2F42ECE6-CA43-4849-8E24-397E7E27B360}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MMTraining", "MMTraining", "{2F42ECE6-CA43-4849-8E24-397E7E27B360}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shenzhen2022B", "src\Shenzhen2022B\Shenzhen2022B.vcxproj", "{7DF758EE-79F5-4E3A-89AA-802C92D68D32}"
 EndProject

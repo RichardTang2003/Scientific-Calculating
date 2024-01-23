@@ -11,6 +11,7 @@
 * @param result 用于储存结果的 Point Vector
 *
 */
+[[deprecated]]
 void connectMain(const Point& target, const std::vector<Point>& nodes, std::vector<Point>& result);
 
 
