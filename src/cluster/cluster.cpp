@@ -10,11 +10,16 @@
 #include "../tools/data_processing.h"
 #include "random_hash_cluster.h"
 
+#include <thread>
+#include <mutex>
+
 void k_means_example();
 void vector_db_client();
 
 int main()
 {
+	std::mutex matrixMutex;
+	std::lock_guard<std::mutex> guard(matrixMutex);
 	vector_db_client();
 }
 
@@ -85,8 +90,8 @@ void k_means_example()
 			return std::abs(i - a) > std::abs(i - b);
 			});
 
-		a = std::accumulate(cluster_a.begin(), cluster_a.end(), 0) / cluster_a.size();
-		b = std::accumulate(cluster_b.begin(), cluster_b.end(), 0) / cluster_b.size();
+		a = std::accumulate(cluster_a.begin(), cluster_a.end(), 0.0) / static_cast<double>(cluster_a.size());
+		b = std::accumulate(cluster_b.begin(), cluster_b.end(), 0.0) / static_cast<double>(cluster_b.size());
 	}
 
 	std::ofstream out("output.txt");

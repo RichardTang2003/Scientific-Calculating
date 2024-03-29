@@ -18,7 +18,7 @@ namespace matools
 		m_dimension = m_data.cols();
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_label.size());
-		for (Eigen::MatrixXd::Index i = 0; i < m_label.size(); ++i) {
+		for (std::size_t i = 0; i < m_label.size(); ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}
@@ -41,7 +41,7 @@ namespace matools
 	VectorDB& VectorDB::save_to(std::ostream& os)
 	{
 		std::ostream_iterator<std::string> os_iter(os, " ");
-		for (Eigen::MatrixXd::Index i = 0; i != m_data.rows(); ++i)
+		for (std::size_t i = 0; i != m_data.rows(); ++i)
 		{
 			os << m_label[i] << ' ';
 			os << m_data.row(i) << '\n';
@@ -68,7 +68,7 @@ namespace matools
 		m_dimension = m_data.cols();
 		generate_hash_rules(m_dimension);
 		m_hash_val.resize(m_label.size());
-		for (Eigen::MatrixXd::Index i = 0; i < m_label.size(); ++i) {
+		for (std::size_t i = 0; i < m_label.size(); ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 			m_hash_val[i] = hash(m_data.row(i));
 		}
@@ -89,7 +89,7 @@ namespace matools
 		}
 	}
 
-	double VectorDB::get_value(const std::string& key, const Eigen::MatrixXd::Index index)
+	double VectorDB::get_value(const std::string& key, const std::size_t index)
 	{
 		if (m_row_label_table.find(key) != m_row_label_table.end())
 		{
@@ -118,7 +118,7 @@ namespace matools
 			return *this;
 		}
 
-		Eigen::MatrixXd::Index i = m_row_label_table.at(key);
+		std::size_t i = m_row_label_table.at(key);
 		m_row_label_table.erase(key);
 		m_row_label_table.emplace(new_name, i);
 
@@ -159,7 +159,7 @@ namespace matools
 			std::cout << "Warning: No matching entry \"" << key << "\" found in database!\n";
 			return *this;
 		}
-		Eigen::MatrixXd::Index rowIndex = m_row_label_table[key];
+		std::size_t rowIndex = m_row_label_table[key];
 		return erase(rowIndex);
 	}
 
@@ -191,9 +191,9 @@ namespace matools
 		m_hash_val.erase(m_hash_val.begin() + rowIndex);
 
 		//重新生成对应 table
-		std::unordered_map<std::string, typename Eigen::MatrixXd::Index>().swap(m_row_label_table);
+		std::unordered_map<std::string, typename std::size_t>().swap(m_row_label_table);
 
-		for (Eigen::MatrixXd::Index i = 0; i < m_label.size(); ++i) {
+		for (std::size_t i = 0; i < m_label.size(); ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 		}
 
@@ -264,9 +264,9 @@ namespace matools
 		}
 
 		//重新生成对应 table
-		std::unordered_map<std::string, typename Eigen::MatrixXd::Index>().swap(m_row_label_table);
+		std::unordered_map<std::string, typename std::size_t>().swap(m_row_label_table);
 
-		for (Eigen::MatrixXd::Index i = 0; i < m_label.size(); ++i) {
+		for (std::size_t i = 0; i < m_label.size(); ++i) {
 			m_row_label_table.emplace(m_label[i], i);
 		}
 
@@ -287,7 +287,7 @@ namespace matools
 
 	VectorDB& VectorDB::save_hash_table_to(std::ostream& os)
 	{
-		for (Eigen::MatrixXd::Index i = 0; i < m_hash_val.size(); ++i)
+		for (std::size_t i = 0; i < m_hash_val.size(); ++i)
 		{
 			os << m_label[i] << ' ';
 			std::ostream_iterator<double> os_it(os, " ");
@@ -320,7 +320,7 @@ namespace matools
 		return hash_value;
 	}
 
-	void VectorDB::generate_hash_rules(const Eigen::MatrixXd::Index& bits)
+	void VectorDB::generate_hash_rules(const std::size_t& bits)
 	{
 		std::srand((unsigned int)std::time(0));
 		m_hash_rules = Eigen::MatrixXd::Random(bits, m_dimension);
@@ -338,7 +338,7 @@ namespace matools
 		}
 
 		std::string line;
-		Eigen::MatrixXd::Index cols = 0;
+		std::size_t cols = 0;
 		std::vector<double> data;
 		bool firstLine = true;
 		while (std::getline(in, line))
@@ -349,7 +349,7 @@ namespace matools
 			row_label.push_back(label);
 
 			std::string value;
-			Eigen::MatrixXd::Index temp_cols = 0;
+			std::size_t temp_cols = 0;
 			while (std::getline(ss, value, delimiter))
 			{
 				std::istringstream ss(value);
