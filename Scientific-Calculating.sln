@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MMTraining", "MMTraining", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TOPSIS", "TOPSIS\TOPSIS.vcxproj", "{BE233927-1FB5-4336-9DD6-C01CAE8033E0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Signal-Processing", "Signal-Processing", "{AD502AC6-6AE6-470C-90EA-2B6073B0C12E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioStaff - FFT", "src\AudioStaff - FFT\AudioStaff - FFT.vcxproj", "{79C1BECC-CE96-4B45-8287-46795670F3CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
